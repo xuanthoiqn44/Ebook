@@ -109,13 +109,12 @@ $id_user = $_SESSION['id'];
 									<a class="btn btn-warning" for="ViewAdmin" href="edit_book.php<?php echo '?book_id='.$id; ?>">
 									<i class="fa fa-edit"></i>
 									</a>
-									<a class="btn btn-download" for="ViewAdmin" href="upload/<?php echo $row['book_file'];  ?>">
+									<a class="btn btn-download" for="ViewAdmin" href="<?php if($row['book_file'] != null){?>download_book.php?file=<?php echo $row['book_file'];  ?><?php }else{echo "#";}?>">
 									<i class="fa fa-download"></i>
 									</a><?php }?>
-								<!--	<a class="btn btn-danger" for="DeleteAdmin" href="#delete<?php //echo $id;?>" data-toggle="modal" data-target="#delete<?php //echo $id;?>">
+									<!--<a class="btn btn-danger" for="DeleteAdmin" href="#delete<?php echo $id;?>" data-toggle="modal" data-target="#delete<?php echo $id;?>">
 										<i class="glyphicon glyphicon-trash icon-white"></i>
-									</a>
-								-->
+									</a>-->
 			
 									<!-- delete modal user -->
 									<div class="modal fade" id="delete<?php  echo $id;?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

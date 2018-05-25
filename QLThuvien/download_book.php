@@ -1,6 +1,9 @@
 <?php
+
+
 if(isset($_REQUEST["file"])){
     // Get parameters
+
     $file = urldecode($_REQUEST["file"]); // Decode URL-encoded string
     $filepath = "upload/" . $file;
     if($file != null){
@@ -16,7 +19,7 @@ if(isset($_REQUEST["file"])){
         flush(); // Flush system output buffer
         readfile($filepath);
         exit;
-    }else{echo "<script>window.location='book.php'</script>";}
+    }
 }
 }
 ?>

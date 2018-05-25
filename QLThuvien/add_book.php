@@ -150,87 +150,93 @@
                                 </div>
                             </form>
 							
-            <?php
-            if(!empty($_FILES['file']))
-  {
-    $path = "upload/";
-    $path = $path . basename( $_FILES['file']['name']);
-    $book_file = $_FILES['file']['name'];
-    if(move_uploaded_file($_FILES['file']['tmp_name'], $path)) {
-      echo "The file ".  basename( $_FILES['file']['name']). 
-      " has been uploaded";
-    } else{
-        echo "There was an error uploading the file, please try again!";
-    }
-  }
-			//include ('include/dbcon.php');
-			if (!isset($_FILES['image']['tmp_name'])) {
-			echo "";
-			}else{
-			$file=$_FILES['image']['tmp_name'];
-			$image = $_FILES["image"] ["name"];
-			$image_name= addslashes($_FILES['image']['name']);
-			$size = $_FILES["image"] ["size"];
-			$error = $_FILES["image"] ["error"];
-			{
-						if($size > 10000000) //conditions for the file
-						{
-						die("Format is not allowed or file size is too big!");
-						}
-						
-					else
-						{
+<?php
+if(isset($_POST['submit'])){
+$book_image = "";
+$book_file = "";
+$check_file = true;
+$check_image = true;
+if (isset($_FILES['image']['tmp_name'])) {
+    $image = $_FILES["image"] ["name"];
+$ext = pathinfo($image, PATHINFO_EXTENSION);
+$allowed =  array('pnp','jpg' ,'gif','jpeg');
+if(in_array($ext,$allowed)){
+$file=$_FILES['image']['tmp_name'];
+$image_name= addslashes($_FILES['image']['name']);
+$size = $_FILES["image"] ["size"];
+$error = $_FILES["image"] ["error"];
+if($size > 10000000) {
+    die("Format is not allowed or file size is too big!");
+    }else{
+        move_uploaded_file($_FILES["image"]["tmp_name"],"book_image/" . $_FILES["image"]["name"]);          
+$book_image=$_FILES["image"]["name"];
 
-					move_uploaded_file($_FILES["image"]["tmp_name"],"book_image/" . $_FILES["image"]["name"]);			
-					$book_image=$_FILES["image"]["name"];
-					
-					$book_title=$_POST['book_title'];
-					$category_id=$_POST['category_id'];
-					$author=$_POST['author'];
-					$author_2=$_POST['author_2'];
-					$author_3=$_POST['author_3'];
-					$author_4=$_POST['author_4'];
-					$author_5=$_POST['author_5'];
-					$point_download=$_POST['point_download'];
-					//$book_pub=$_POST['book_pub'];
-					$copyright_year=$_POST['copyright_year'];
-					$status=$_POST['status'];
-					$publisher_id = $_SESSION['id'];
-					
-					
-					
-					if ($status == 'Lost') {
-						$remark = 'Not Available';
-					} elseif ($status == 'Damaged') {
-						$remark = 'Not Available';
-					} else {
-						$remark = 'Available';
-					}
-					
-					{
-					$result = $db->db_query("INSERT into book (book_title,category_id,author,author_2,author_3,author_4,author_5,point_download,publisher_id,copyright_year,status,book_image,book_file,date_added,remarks)
-					values('$book_title','$category_id','$author','$author_2','$author_3','$author_4','$author_5','$point_download','$publisher_id','$copyright_year','$status','$book_image','$book_file',NOW(),'$remark')")or die(mysql_error());
-					if ($result) {
-                        # code...
-                        $get_point_user = $db->db_query("SELECT point from user where user_id ='$publisher_id'");
-                        
-                        $point = $db->db_fetch_array($get_point_user);
-                        $point1 = $point['point'] + 3;
-                        
-                        $result =  $db->db_query("UPDATE user set point = '$point1' where user_id = '$publisher_id'");
-                        if ($result) {
-                            # code...
-                            echo "<script>alert('Upload sách thành công');window.location='index.php' </script>";
-                        }
-                        
-                    }
-					//$db->db_query("insert into barcode (pre_barcode,mid_barcode,suf_barcode) values ('$pre', '$mid', '$suf') ") or die (mysql_error());
-					}
-					//header("location: view_barcode.php?code=".$gen);
-					}
-                }
-            }
-            ?>
+$book_title=$_POST['book_title'];
+$category_id=$_POST['category_id'];
+$author=$_POST['author'];
+$author_2=$_POST['author_2'];
+$author_3=$_POST['author_3'];
+$author_4=$_POST['author_4'];
+$author_5=$_POST['author_5'];
+$point_download=$_POST['point_download'];
+//$book_pub=$_POST['book_pub'];
+$copyright_year=$_POST['copyright_year'];
+$status=$_POST['status'];
+$publisher_id = $_SESSION['id'];
+
+
+
+if ($status == 'Lost') {
+    $remark = 'Not Available';
+} elseif ($status == 'Damaged') {
+    $remark = 'Not Available';
+} else {
+    $remark = 'Available';
+}
+    }
+}else{
+    $check_image = false;
+echo "<script>alert('Lỗi trong quá trình upload image')</script>";
+}
+}
+if(!empty($_FILES['file'])){
+$allowed =  array('html','php' ,'css','js','txt');
+$book_file = $_FILES['file']['name'];
+$ext = pathinfo($book_file, PATHINFO_EXTENSION);
+if(!in_array($ext,$allowed)){
+    $path = "upload/";
+$path = $path . basename( $_FILES['file']['name']);
+if(move_uploaded_file($_FILES['file']['tmp_name'], $path)) {
+echo "The file ".  basename( $_FILES['file']['name']). 
+" has been uploaded";
+}else{
+echo "There was an error uploading the file, please try again!";
+}
+}else{
+    $check_file = false;
+echo "<script>alert('Lỗi trong quá trình upload file')</script>";
+}
+}
+if($check_file && $check_image){
+    $result = $db->db_query("INSERT into book (book_title,category_id,author,author_2,author_3,author_4,author_5,point_download,publisher_id,copyright_year,status,book_image,book_file,date_added,remarks)
+values('$book_title','$category_id','$author','$author_2','$author_3','$author_4','$author_5','$point_download','$publisher_id','$copyright_year','$status','$book_image','$book_file',NOW(),'$remark')")or die(mysql_error());
+    if ($result) {
+    # code...
+    $get_point_user = $db->db_query("SELECT point from user where user_id ='$publisher_id'");
+    
+    $point = $db->db_fetch_array($get_point_user);
+    $point1 = $point['point'] + 3;
+    
+    $result =  $db->db_query("UPDATE user set point = '$point1' where user_id = '$publisher_id'");
+    if ($result) {
+        # code...
+        echo "<script>alert('Upload sách thành công');window.location='index.php' </script>";
+    }
+    
+}
+}
+}
+?>
 						
                         <!-- content ends here -->
                     </div>

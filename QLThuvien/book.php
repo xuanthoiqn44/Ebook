@@ -116,7 +116,7 @@
 									<a class="btn btn-warning" for="ViewAdmin" href="edit_book.php<?php echo '?book_id='.$id; ?>">
 									<i class="fa fa-edit"></i>
 									</a><?php } if($_SESSION['id'] != 0){?>
-									<a class="btn btn-download" for="ViewAdmin" href="download_book.php?file=<?php echo $row['book_file'];  ?>">
+									<a class="btn btn-download" for="ViewAdmin" href="<?php if($row['book_file'] != null){?>download_book.php?file=<?php echo $row['book_file'];  ?><?php }else{echo "#";}?>">
 									<i class="fa fa-download"></i>
 									</a><?php }?>
 								
